@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +39,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Request;
 
+
+
 public class Home extends AppCompatActivity {
 
     FirebaseAuth auth;
@@ -46,6 +52,10 @@ public class Home extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
 
     @Override
@@ -93,6 +103,22 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+            }
+
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                runOnUiThread(() -> Toast.makeText(Home.this, "The app won't work without an internet connection!", Toast.LENGTH_LONG).show());
+            }
+        };
+
+        networkChangeReceiver = new NetworkChangeReceiver(networkCallback);
+
         // Schedule daily verse notification
         scheduleDailyVerseNotification();
     }
@@ -189,4 +215,31 @@ public class Home extends AppCompatActivity {
         // Repeat the alarm every day
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerNetworkChangeReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterNetworkChangeReceiver();
+    }
+
+    private void registerNetworkChangeReceiver() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkRequest.Builder builder = new NetworkRequest.Builder();
+            connectivityManager.registerNetworkCallback(builder.build(), networkCallback);
+        }
+    }
+
+    private void unregisterNetworkChangeReceiver() {
+        if (connectivityManager != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
+    }
 }
+
