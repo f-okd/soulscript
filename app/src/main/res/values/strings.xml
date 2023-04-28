@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">soulscript</string>
+    <string name="title">SoulScript</string>
+    <string name="email">Email</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    <string name="register_with_colon">Register:</string>
+    <string name="login_with_colon">Login:</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="login_redirect_prompt">Click here if you already have an account</string>
+    <string name="register_redirect_prompt">Create account</string>
+    <string name="logout">Logout</string>
+    <string name="how_are_you_feeling">How are you feeling?</string>
+    <string name="search">Search</string>
+    <string name="recommend">Recommend</string>
+    <string name="i_feel">I feel...</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="notifications">Notifications</string>
+    <string name="daily_bible_verses">Would you like to opt in to daily insightful verses?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="change_password">Change Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">new password</string>
+    <string name="confirm_new_password">confirm new password</string>
+    <string name="return_to_login">Return to login</string>
+    <string name="bookmarks">Bookmarks</string>
+</resources>
