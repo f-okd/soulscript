@@ -42,6 +42,7 @@ public class DailyVerseService extends Service {
         }
     }
 
+    // This method is called when the service is started
     private void sendDailyVerseNotification() {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.verseoftheday.com/"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
