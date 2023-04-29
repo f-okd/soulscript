@@ -2,6 +2,7 @@ package com.example.soulscript;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -62,6 +63,7 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Log.d("Home", "Activity created");
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -108,14 +110,21 @@ public class Home extends AppCompatActivity {
             @Override
             public void onAvailable(Network network) {
                 super.onAvailable(network);
+                Intent intent = new Intent("NETWORK_STATUS");
+                intent.putExtra("status", true);
+                LocalBroadcastManager.getInstance(Home.this).sendBroadcast(intent);
             }
 
             @Override
             public void onLost(Network network) {
                 super.onLost(network);
+                Intent intent = new Intent("NETWORK_STATUS");
+                intent.putExtra("status", false);
+                LocalBroadcastManager.getInstance(Home.this).sendBroadcast(intent);
                 runOnUiThread(() -> Toast.makeText(Home.this, "The app won't work without an internet connection!", Toast.LENGTH_LONG).show());
             }
         };
+
 
         networkChangeReceiver = new NetworkChangeReceiver(networkCallback);
 
@@ -183,14 +192,17 @@ public class Home extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                    Log.d("Home", "API request successful");
 
                 } else {
+                    Log.e("Home", "API request unsuccessful: " + response.body().toString());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             errorMessage("Failed to load response due to "+response.body().toString());
                         }
                     });
+
 
                 }
             }
@@ -214,18 +226,21 @@ public class Home extends AppCompatActivity {
 
         // Repeat the alarm every day
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.d("Home", "Daily verse notification scheduled for " + calendar.getTime().toString());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerNetworkChangeReceiver();
+        Log.d("Home", "Activity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterNetworkChangeReceiver();
+        Log.d("Home", "Activity paused");
     }
 
     private void registerNetworkChangeReceiver() {

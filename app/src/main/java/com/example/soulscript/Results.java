@@ -3,7 +3,9 @@ package com.example.soulscript;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -71,12 +73,17 @@ public class Results extends AppCompatActivity {
                         BibleVerse bibleVerse = new BibleVerse(verse, text, explanation);
                         // Save the verse to the user's bookmarks in Firebase Realtime Database
                         bookmarkRef.push().setValue(bibleVerse);
+
+                        // Save the verse to the local SQLite database
+                        insertBookmark(bibleVerse);
                         Toast.makeText(Results.this, "Bookmark saved", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Verse bookmarked.");
                         // Start the Bookmarks activity
                         Intent bookmarksIntent = new Intent(Results.this, Bookmarks.class);
                         startActivity(bookmarksIntent);
                     }
+
+
                 });
 
 
@@ -110,6 +117,21 @@ public class Results extends AppCompatActivity {
                 Log.e(TAG, "Error checking if verse is bookmarked.", databaseError.toException());
             }
         });
+    }
+
+    private void insertBookmark(BibleVerse bibleVerse) {
+        SQLiteDatabase db = new BookmarksDbHelper(this).getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BookmarksContract.BookmarksEntry.COLUMN_VERSE, bibleVerse.getVerse());
+        contentValues.put(BookmarksContract.BookmarksEntry.COLUMN_TEXT, bibleVerse.getText());
+        contentValues.put(BookmarksContract.BookmarksEntry.COLUMN_EXPLANATION, bibleVerse.getExplanation());
+
+        long newRowId = db.insert(BookmarksContract.BookmarksEntry.TABLE_NAME, null, contentValues);
+        if (newRowId == -1) {
+            Toast.makeText(this, "Error saving bookmark", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Bookmark saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
     }
 
 

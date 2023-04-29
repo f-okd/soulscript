@@ -42,6 +42,11 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
         });
     }
 
+    public void setBookmarks(ArrayList<BibleVerse> newBibleVerses) {
+        this.bibleVerses = newBibleVerses;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemCount() {
