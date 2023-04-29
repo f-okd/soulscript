@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import com.example.soulscript.CustomTitleTextView;
+
 
 
 public class Registration extends AppCompatActivity {
@@ -32,6 +34,8 @@ public class Registration extends AppCompatActivity {
     FirebaseAuth mAuth;
     TextView textViewLoginRedirect;
     ProgressBar progressBar;
+    CustomTitleTextView textViewTitle;
+
 
     /* Check if the user is already signed in
      * ref:
@@ -61,6 +65,7 @@ public class Registration extends AppCompatActivity {
         buttonRegister = findViewById(R.id.button_registration);
         textViewLoginRedirect = findViewById(R.id.login_redirect_textview);
         progressBar = findViewById(R.id.progress_bar);
+        textViewTitle = findViewById(R.id.title_textview);
 
         // Add onclick listener to the login redirect text to send user to login page
         textViewLoginRedirect.setOnClickListener(new View.OnClickListener() {

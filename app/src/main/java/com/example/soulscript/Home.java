@@ -40,7 +40,6 @@ import okhttp3.Response;
 import okhttp3.Request;
 
 
-
 public class Home extends AppCompatActivity {
 
     FirebaseAuth auth;
@@ -49,6 +48,7 @@ public class Home extends AppCompatActivity {
     FirebaseUser user;
     ImageButton buttonSettings;
     Button buttonSearch, buttonBookmarks;
+
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();

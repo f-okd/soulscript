@@ -9,16 +9,19 @@
     android:gravity="center"
     tools:context=".Registration">
 
-
-    <!--Add Textview for email and password fields-->
-    <TextView
-        android:text="@string/title"
-        android:textSize="50sp"
+    <com.example.soulscript.CustomTitleTextView
+        android:id="@+id/title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registration"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:text="@string/register_with_colon"
