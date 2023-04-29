@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +49,7 @@ public class Home extends AppCompatActivity {
     TextInputEditText userInput;
     FirebaseUser user;
     ImageButton buttonSettings;
-    Button buttonSearch, buttonBookmarks;
+    Button buttonSearch, buttonBookmarks, buttonRecommend;
 
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
@@ -69,6 +70,7 @@ public class Home extends AppCompatActivity {
         user = auth.getCurrentUser();
         buttonSettings = findViewById(R.id.settings_button);
         buttonSearch = findViewById(R.id.search_button);
+        buttonRecommend = findViewById(R.id.recommendButton);
         buttonBookmarks = findViewById(R.id.bookmarksButton);
         userInput = findViewById(R.id.user_input);
 
@@ -79,6 +81,13 @@ public class Home extends AppCompatActivity {
             finish();
         } else {
             //
+        }
+
+        boolean isConnected = isNetworkConnected();
+        buttonSearch.setEnabled(isConnected);
+        buttonRecommend.setEnabled(isConnected);
+        if (!isConnected) {
+            Toast.makeText(Home.this, "The app won't work completely without an internet connection!", Toast.LENGTH_LONG).show();
         }
 
         buttonSearch.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +122,11 @@ public class Home extends AppCompatActivity {
                 Intent intent = new Intent("NETWORK_STATUS");
                 intent.putExtra("status", true);
                 LocalBroadcastManager.getInstance(Home.this).sendBroadcast(intent);
+
+                runOnUiThread(() -> {
+                    buttonSearch.setEnabled(true);
+                    buttonRecommend.setEnabled(true);
+                });
             }
 
             @Override
@@ -121,9 +135,15 @@ public class Home extends AppCompatActivity {
                 Intent intent = new Intent("NETWORK_STATUS");
                 intent.putExtra("status", false);
                 LocalBroadcastManager.getInstance(Home.this).sendBroadcast(intent);
-                runOnUiThread(() -> Toast.makeText(Home.this, "The app won't work without an internet connection!", Toast.LENGTH_LONG).show());
+
+                runOnUiThread(() -> {
+                    buttonSearch.setEnabled(false);
+                    buttonRecommend.setEnabled(false);
+                    Toast.makeText(Home.this, "The app won't work completely without an internet connection!", Toast.LENGTH_LONG).show();
+                });
             }
         };
+
 
 
         networkChangeReceiver = new NetworkChangeReceiver(networkCallback);
@@ -241,6 +261,12 @@ public class Home extends AppCompatActivity {
         super.onPause();
         unregisterNetworkChangeReceiver();
         Log.d("Home", "Activity paused");
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     private void registerNetworkChangeReceiver() {
