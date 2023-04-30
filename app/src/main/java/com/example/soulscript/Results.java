@@ -1,16 +1,21 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.core.view.MenuItemCompat;
 
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,20 +30,19 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.appcompat.widget.ShareActionProvider;
-import androidx.core.view.MenuItemCompat;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
 public class Results extends AppCompatActivity {
+
+    // Declare variables:
+    // The code declares several variables to represent UI elements and Firebase authentication objects.
     private static final String TAG = "Results";
     private boolean isVerseBookmarked = false;
-    TextView resultBox1, resultBox2;
-    Button buttonBookmark;
-    FirebaseAuth auth;
-    FirebaseUser user;
-    DatabaseReference bookmarkRef;
+    private TextView resultBox1, resultBox2;
+    private Button buttonBookmark;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private DatabaseReference bookmarkRef;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +50,22 @@ public class Results extends AppCompatActivity {
         setContentView(R.layout.activity_results);
         Log.d(TAG, "Results activity created.");
 
+        // Initialize Firebase authentication objects:
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        // Replace "your-database-url" with the actual URL of your Firebase Realtime Database
+        // Get a reference to the Firebase Realtime Database location for the user's bookmarks
         String databaseUrl = "https://soulscript-7fb99-default-rtdb.europe-west1.firebasedatabase.app//";
         bookmarkRef = FirebaseDatabase.getInstance(databaseUrl).getReference().child("bookmarks").child(user.getUid());
 
+        // Initialize UI elements:
         resultBox1 = findViewById(R.id.result_box_1);
         resultBox2 = findViewById(R.id.result_box_2);
         buttonBookmark = findViewById(R.id.bookmark);
 
+        /* Get search results and display it in UI:
+        * The code gets the result text from the intent.
+        * The result text is a JSONObject that contains the verse, text, and explanation. */
         String resultText = getIntent().getStringExtra("resultText");
         if (resultText != null) {
             try {
@@ -70,7 +79,7 @@ public class Results extends AppCompatActivity {
                 resultBox1.setText(verse + "\n\n" + text);
                 resultBox2.setText(explanation);
 
-                // add OnClickListener to bookmark button
+                // Add OnClickListener to bookmark button
                 buttonBookmark.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -103,7 +112,10 @@ public class Results extends AppCompatActivity {
         }
     }
 
-
+    /* Check if the verse is bookmarked:
+    * The code checks if the verse is bookmarked by querying the Firebase Realtime Database.
+    * If the verse is bookmarked, the bookmark button is disabled and the text is changed to "Bookmarked".
+    * If the verse is not bookmarked, the bookmark button is enabled and the text is changed to "Bookmark".*/
     private void checkIfVerseBookmarked(String verse) {
         bookmarkRef.orderByChild("verse").equalTo(verse).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -126,6 +138,11 @@ public class Results extends AppCompatActivity {
         });
     }
 
+    /* Insert bookmark into local SQLite database:
+    * The code inserts the verse into the local SQLite database.
+    * The code uses a helper class, BookmarksDbHelper, to get a reference to the database.
+    * The code creates a ContentValues object to store the verse data.
+    * The code inserts the verse into the database and displays a toast message to indicate success or failure. */
     private void insertBookmark(BibleVerse bibleVerse) {
         SQLiteDatabase db = new BookmarksDbHelper(this).getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -141,6 +158,10 @@ public class Results extends AppCompatActivity {
         }
     }
 
+    /* Create menu:
+    * The code inflates the menu resource file, menu_results.xml.
+    * The code gets the ShareActionProvider from the menu item and attaches an intent to it.
+    * The intent contains the verse and explanation text from the search result. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_results, menu);
@@ -153,13 +174,14 @@ public class Results extends AppCompatActivity {
         return true;
     }
 
+    /* Create text to share:
+    * The code gets the verse and explanation text from the search result.
+    * The code returns a string that contains the verse and explanation text. */
     private String createShareText() {
         String verse = resultBox1.getText().toString();
         String explanation = resultBox2.getText().toString();
         return "Verse: " + verse + "\n\nExplanation: " + explanation;
     }
-
-
 
     @Override
     protected void onDestroy() {
