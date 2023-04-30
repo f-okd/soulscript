@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class Settings extends AppCompatActivity {
     TextView textViewUserDetails;
     FirebaseAuth auth;
     FirebaseUser user;
+    RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class Settings extends AppCompatActivity {
         editTextNewPassword = findViewById(R.id.new_password);
         editTextConfirmNewPassword = findViewById(R.id.confirm_new_password);
         textViewUserDetails = findViewById(R.id.user_details);
+        radioGroup = findViewById(R.id.radio_group);
 
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
