@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class Results extends AppCompatActivity {
     private boolean isVerseBookmarked = false;
     TextView resultBox1, resultBox2;
     Button buttonBookmark;
+    ImageButton buttonShare;
     FirebaseAuth auth;
     FirebaseUser user;
     DatabaseReference bookmarkRef;
@@ -49,6 +51,7 @@ public class Results extends AppCompatActivity {
         resultBox1 = findViewById(R.id.result_box_1);
         resultBox2 = findViewById(R.id.result_box_2);
         buttonBookmark = findViewById(R.id.bookmark);
+        buttonShare = findViewById(R.id.share_button);
 
         String resultText = getIntent().getStringExtra("resultText");
         if (resultText != null) {
