@@ -1,5 +1,7 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,22 +21,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Settings extends AppCompatActivity {
-
-    Button buttonLogout, buttonChangePassword;
-    TextInputEditText editTextNewPassword, editTextConfirmNewPassword;
-    TextView textViewUserDetails;
-    FirebaseAuth auth;
-    FirebaseUser user;
-    RadioGroup radioGroup;
+    // Declare variables:
+    // The code declares several variables to represent UI elements and Firebase authentication objects.
+    private Button buttonLogout, buttonChangePassword;
+    private TextInputEditText editTextNewPassword, editTextConfirmNewPassword;
+    private TextView textViewUserDetails;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        // Initialize Firebase authentication objects:
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
+        // Initialize UI elements:
+        // The code initializes the UI elements by finding their references using their unique IDs, which are defined in an XML file.
         buttonLogout = findViewById(R.id.logout);
         buttonChangePassword = findViewById(R.id.change_password_button);
         editTextNewPassword = findViewById(R.id.new_password);
@@ -42,6 +48,8 @@ public class Settings extends AppCompatActivity {
         textViewUserDetails = findViewById(R.id.user_details);
         radioGroup = findViewById(R.id.radio_group);
 
+        // Check if user is logged in:
+        // The code checks if a user is logged in. If not, the user is redirected to the login activity.
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
@@ -50,6 +58,10 @@ public class Settings extends AppCompatActivity {
             textViewUserDetails.setText(user.getEmail());
         }
 
+
+        /* The code initializes the change password button click listener:
+        * When the button is clicked, the code retrieves the new password and confirms the new password from the text fields.
+        * If the passwords match, and is strong, the code calls the updatePassword() method to update the user's password. */
         buttonChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +90,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        // The code initializes the logout button click listener:
+        // When the button is clicked, the code calls the signOut() method to sign out the user.
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +104,8 @@ public class Settings extends AppCompatActivity {
 
     }
 
+    // The code defines the updatePassword() method:
+    // The code calls the updatePassword() method on the user object, which is retrieved from the FirebaseAuth instance.
     private void updatePassword(String newPassword) {
         FirebaseUser user = auth.getCurrentUser();
         https://firebase.google.com/docs/auth/web/manage-users#set_a_users_password
@@ -103,14 +119,15 @@ public class Settings extends AppCompatActivity {
                 });
     }
 
+    /* The code defines the isStrongPassword() method:
+    * The code checks if the password matches the regular expression pattern.
+    * The regular expression pattern is defined as follows:
+    * At least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character.
+    * Allows exception of eee for the test account */
     public static boolean isStrongPassword(String password) {
-        /* At least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 digit,...
-        / ...and 1 special character */
         String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);
-
-        // Check if the password matches the pattern or is "eee" (for the test account to be a valid creation)
         return matcher.matches() || password.equals("eeeeee");
     }
 }

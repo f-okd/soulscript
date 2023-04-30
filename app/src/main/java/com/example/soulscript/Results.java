@@ -25,12 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.core.view.MenuItemCompat;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
 public class Results extends AppCompatActivity {
     private static final String TAG = "Results";
     private boolean isVerseBookmarked = false;
     TextView resultBox1, resultBox2;
     Button buttonBookmark;
-    ImageButton buttonShare;
     FirebaseAuth auth;
     FirebaseUser user;
     DatabaseReference bookmarkRef;
@@ -51,7 +56,6 @@ public class Results extends AppCompatActivity {
         resultBox1 = findViewById(R.id.result_box_1);
         resultBox2 = findViewById(R.id.result_box_2);
         buttonBookmark = findViewById(R.id.bookmark);
-        buttonShare = findViewById(R.id.share_button);
 
         String resultText = getIntent().getStringExtra("resultText");
         if (resultText != null) {
@@ -136,6 +140,25 @@ public class Results extends AppCompatActivity {
             Toast.makeText(this, "Bookmark saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_results, menu);
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, createShareText());
+        shareActionProvider.setShareIntent(shareIntent);
+        return true;
+    }
+
+    private String createShareText() {
+        String verse = resultBox1.getText().toString();
+        String explanation = resultBox2.getText().toString();
+        return "Verse: " + verse + "\n\nExplanation: " + explanation;
+    }
+
 
 
     @Override
