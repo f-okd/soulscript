@@ -41,6 +41,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Request;
 
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+
+
 
 public class Home extends AppCompatActivity {
 
@@ -50,6 +54,7 @@ public class Home extends AppCompatActivity {
     FirebaseUser user;
     ImageButton buttonSettings;
     Button buttonSearch, buttonBookmarks, buttonRecommend;
+    GestureDetector gestureDetector;
 
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
@@ -73,6 +78,15 @@ public class Home extends AppCompatActivity {
         buttonRecommend = findViewById(R.id.recommendButton);
         buttonBookmarks = findViewById(R.id.bookmarksButton);
         userInput = findViewById(R.id.user_input);
+
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                Intent intent = new Intent(getApplicationContext(), Bookmarks.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         /* If user not logged in, open login activity and close main activity/home page*/
         if (user == null) {
@@ -282,5 +296,12 @@ public class Home extends AppCompatActivity {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 }
 
