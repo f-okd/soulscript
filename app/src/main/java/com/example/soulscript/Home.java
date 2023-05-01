@@ -19,12 +19,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,14 +61,16 @@ public class Home extends AppCompatActivity {
     ImageButton buttonSettings;
     Button buttonSearch, buttonBookmarks, buttonRecommend;
     GestureDetector gestureDetector;
+    ProgressBar progressBar;
 
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     // Instantiate OkHttpClient to make API calls
     OkHttpClient client = new OkHttpClient();
+    private DatabaseReference bookmarkRef;
+    private String databaseUrl;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,11 @@ public class Home extends AppCompatActivity {
         buttonRecommend = findViewById(R.id.recommendButton);
         buttonBookmarks = findViewById(R.id.bookmarksButton);
         userInput = findViewById(R.id.user_input);
+        progressBar = findViewById(R.id.progress_bar);
+
+        // Get a reference to the Firebase Realtime Database location for the user's bookmarks
+        databaseUrl = "https://soulscript-7fb99-default-rtdb.europe-west1.firebasedatabase.app//";
+        bookmarkRef = FirebaseDatabase.getInstance(databaseUrl).getReference().child("bookmarks").child(user.getUid());
 
         // Initialize gesture detector:
         // The code initializes a gesture detector to detect double taps on the home page.
@@ -107,6 +120,7 @@ public class Home extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBarAndDisableButtons();
                 String message = String.valueOf(userInput.getText());
                 callApi(message);
                 Log.d("Home", "Search button clicked");
@@ -124,6 +138,53 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        // Set an onClick listener for the recommend button
+        buttonRecommend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showProgressBarAndDisableButtons();
+                // Fetch the 10 most recent bookmarked verses from the Firebase Realtime Database
+                // orderByChild("timestamp") sorts the verses by their timestamp
+                // limitToLast(10) limits the fetched data to the 10 most recent verses
+                bookmarkRef.orderByChild("timestamp").limitToLast(10).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // Create a StringBuilder to store the verses
+                        StringBuilder verses = new StringBuilder();
+
+                        // Iterate through each DataSnapshot (bookmarked verse) and get the verse text
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String verse = snapshot.child("verse").getValue(String.class);
+                            if (verse != null) {
+                                // Append the verse and a comma to the StringBuilder
+                                verses.append(verse).append(", ");
+                            }
+                        }
+
+                        // Remove the trailing comma and space from the StringBuilder
+                        if (verses.length() > 0) {
+                            verses.setLength(verses.length() - 2);
+                        }
+
+                        // Create a message containing the most recent bookmarked verses
+                        String message = "Please recommend a verse that has the same themes as these verses: " + verses.toString();
+
+                        // Make an API call using the message with the most recent bookmarked verses
+                        callApi(message);
+                        Log.d("Home", "Recommend button clicked");
+                    }
+
+                    // Handle onCancelled event if the Firebase Realtime Database operation fails
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w("Home", "Failed to read value.", databaseError.toException());
+                        errorMessage("Failed to load bookmarked verses.");
+                    }
+                });
+            }
+        });
+
+
         // The code sets an onclick listener for the settings image button.
         // When the button is clicked, the app opens the settings activity.
         buttonSettings.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +194,7 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         // Listen for network changes:
         // The code listens for network changes and disables the search and recommend buttons if the network is unavailable.
@@ -169,8 +231,25 @@ public class Home extends AppCompatActivity {
         scheduleDailyVerseNotification();
     }
 
+    // Method to show the progress bar and disable buttons
+    private void showProgressBarAndDisableButtons() {
+        progressBar.setVisibility(View.VISIBLE);
+        buttonSearch.setEnabled(false);
+        buttonRecommend.setEnabled(false);
+        buttonBookmarks.setEnabled(false);
+    }
+
+    // Method to hide the progress bar and enable buttons
+    private void hideProgressBarAndEnableButtons() {
+        progressBar.setVisibility(View.GONE);
+        buttonSearch.setEnabled(true);
+        buttonRecommend.setEnabled(true);
+        buttonBookmarks.setEnabled(true);
+    }
+
     void errorMessage(String error) {
         Toast.makeText(Home.this, error, Toast.LENGTH_SHORT).show();
+        hideProgressBarAndEnableButtons();
     }
 
     // Used to open results activity with output from chatgpt api
@@ -179,6 +258,7 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), Results.class);
         intent.putExtra("resultText", output);
         startActivity(intent);
+        hideProgressBarAndEnableButtons();
     }
 
     // Send request to chatgpt api using okhttp
@@ -228,7 +308,14 @@ public class Home extends AppCompatActivity {
                         jsonObject = new JSONObject(response.peekBody(Long.MAX_VALUE).string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
                         String result = jsonArray.getJSONObject(0).getString("text");
-                        PostResult(result);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                PostResult(result);
+                            }
+                        });
+
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -242,8 +329,6 @@ public class Home extends AppCompatActivity {
                             errorMessage("Failed to load response due to "+response.body().toString());
                         }
                     });
-
-
                 }
             }
         });

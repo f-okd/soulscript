@@ -116,7 +116,8 @@ public class Settings extends AppCompatActivity {
     // The code calls the updatePassword() method on the user object, which is retrieved from the FirebaseAuth instance.
     private void updatePassword(String newPassword) {
         FirebaseUser user = auth.getCurrentUser();
-        https://firebase.google.com/docs/auth/web/manage-users#set_a_users_password
+        // The following code is based on the Firebase documentation at the following URL:
+        // https://firebase.google.com/docs/auth/web/manage-users#set_a_users_password
         user.updatePassword(newPassword)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

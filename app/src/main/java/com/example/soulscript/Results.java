@@ -41,6 +41,7 @@ public class Results extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference bookmarkRef;
+    private String databaseUrl;
 
 
 
@@ -55,7 +56,7 @@ public class Results extends AppCompatActivity {
         user = auth.getCurrentUser();
 
         // Get a reference to the Firebase Realtime Database location for the user's bookmarks
-        String databaseUrl = "https://soulscript-7fb99-default-rtdb.europe-west1.firebasedatabase.app//";
+        databaseUrl = "https://soulscript-7fb99-default-rtdb.europe-west1.firebasedatabase.app//";
         bookmarkRef = FirebaseDatabase.getInstance(databaseUrl).getReference().child("bookmarks").child(user.getUid());
 
         // Initialize UI elements:
