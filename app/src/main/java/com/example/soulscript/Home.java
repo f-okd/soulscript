@@ -237,6 +237,7 @@ public class Home extends AppCompatActivity {
         buttonSearch.setEnabled(false);
         buttonRecommend.setEnabled(false);
         buttonBookmarks.setEnabled(false);
+        buttonSettings.setEnabled(false);
     }
 
     // Method to hide the progress bar and enable buttons
@@ -245,6 +246,7 @@ public class Home extends AppCompatActivity {
         buttonSearch.setEnabled(true);
         buttonRecommend.setEnabled(true);
         buttonBookmarks.setEnabled(true);
+        buttonSettings.setEnabled(true);
     }
 
     void errorMessage(String error) {
