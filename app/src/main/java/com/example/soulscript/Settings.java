@@ -124,7 +124,7 @@ public class Settings extends AppCompatActivity {
     * The regular expression pattern is defined as follows:
     * At least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character.
     * Allows exception of eee for the test account */
-    public static boolean isStrongPassword(String password) {
+    private static boolean isStrongPassword(String password) {
         String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);

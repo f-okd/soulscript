@@ -1,5 +1,7 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -12,7 +14,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,10 +24,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
+/*
+* This class represents the Bookmarks screen.
+* It handles displaying a list of bookmarked Bible verses using a RecyclerView.
+* This class is responsible for managing and interacting with Firebase Realtime Database and a local SQLite database to store and retrieve the bookmarked verses.
+* It also listens to network status changes to switch between online and offline data sources.
+ */
 public class Bookmarks extends AppCompatActivity {
+    // Declare variables:
     private static final String TAG = "Bookmarks";
     private RecyclerView bookmarksRecyclerView;
     private BookmarksAdapter bookmarksAdapter;
@@ -41,20 +48,22 @@ public class Bookmarks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
 
+        // Initialize Firebase authentication objects:
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String databaseUrl = "https://soulscript-7fb99-default-rtdb.europe-west1.firebasedatabase.app//";
         bookmarkRef = FirebaseDatabase.getInstance(databaseUrl).getReference().child("bookmarks").child(user.getUid());
 
+        // Initialize the RecyclerView and its adapter
         bookmarksRecyclerView = findViewById(R.id.bookmarks_recycler_view);
         bookmarksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bookmarksAdapter = new BookmarksAdapter(this, new ArrayList<>());
         bookmarksRecyclerView.setAdapter(bookmarksAdapter);
 
+        // Initialize the local database
         bookmarkDbHelper = new BookmarksDbHelper(this);
         loadLocalBookmarks();
 
-        // Listen for changes to the bookmarks in the Firebase Realtime Database
-        // and update the bookmarks list accordingly
+        // Listen for changes to the bookmarks in the Firebase Realtime Database and update the bookmarks list accordingly
         valueEventListener = bookmarkRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -81,6 +90,7 @@ public class Bookmarks extends AppCompatActivity {
             }
         });
 
+        // Listen for changes to the network status and load bookmarks from local storage if the device is offline
         networkStatusReceiver = new NetworkStatusReceiver(new NetworkStatusReceiver.NetworkStatusListener() {
             @Override
             public void onNetworkStatusChanged(boolean isConnected) {
@@ -98,7 +108,7 @@ public class Bookmarks extends AppCompatActivity {
     }
 
 
-
+    // Load bookmarks from the local database into the bookmarks list
     private void loadLocalBookmarks() {
         ArrayList<BibleVerse> localBookmarks = new ArrayList<>();
         Cursor cursor = bookmarkDbHelper.getAllBookmarks();
@@ -117,6 +127,7 @@ public class Bookmarks extends AppCompatActivity {
         Log.d(TAG, "loadLocalBookmarks() method called.");
     }
 
+    // Update the local bookmarks table with the latest bookmarks from the Firebase Realtime Database
     private void updateLocalBookmarks(ArrayList<BibleVerse> bibleVerses) {
         // Delete all rows from the local bookmarks table
         SQLiteDatabase db = bookmarkDbHelper.getWritableDatabase();
@@ -133,11 +144,6 @@ public class Bookmarks extends AppCompatActivity {
 
         Log.d(TAG, "Local bookmarks updated.");
     }
-
-
-
-
-
 
     @Override
     protected void onDestroy() {

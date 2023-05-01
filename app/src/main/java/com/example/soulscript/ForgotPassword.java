@@ -1,5 +1,7 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPassword extends AppCompatActivity {
 
+    // Declare variables:
     TextInputEditText editTextEmail;
     TextView textViewLoginRedirect;
     Button resetPasswordButton;
@@ -33,6 +36,7 @@ public class ForgotPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
+        // Initialize variables:
         editTextEmail = findViewById(R.id.email);
         resetPasswordButton = findViewById(R.id.reset_password_button);
         progressBar = findViewById(R.id.progress_bar);
@@ -40,6 +44,7 @@ public class ForgotPassword extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
+        // Add onclick listener to the reset password button to send user a password reset email
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +52,7 @@ public class ForgotPassword extends AppCompatActivity {
             }
         });
 
-        // Add onclick listener to the login redirect text to send user to login page
+        // Add onclick listener to the login redirect textview to send user to login page
         textViewLoginRedirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +63,10 @@ public class ForgotPassword extends AppCompatActivity {
         });
     }
 
+    /* The code checks if the email field is empty or if the email is invalid.
+    * If it is empty or invalid, the code displays a toast message to the user.
+    * If the email is valid, the code displays a progress bar and sends a password reset email to the user.
+    * If the email is not associated with an account, the code displays a toast message to the user. */
     private void resetPassword() {
         String email = editTextEmail.getText().toString().trim();
 
@@ -69,7 +78,6 @@ public class ForgotPassword extends AppCompatActivity {
             Toast.makeText(ForgotPassword.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
             return;
         }
-
         progressBar.setVisibility(View.VISIBLE);
         auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

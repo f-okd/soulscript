@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+// This class is used to create a database for storing bookmarks.
 public class BookmarksDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Bookmarks.db";
     public static final int DATABASE_VERSION = 1;

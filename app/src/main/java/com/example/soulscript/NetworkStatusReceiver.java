@@ -8,6 +8,7 @@ import android.net.Network;
 import android.net.NetworkRequest;
 import android.util.Log;
 
+// This class is used to monitor the status of the network connection.
 public class NetworkStatusReceiver extends BroadcastReceiver {
     private static final String TAG = "NetworkStatusReceiver";
     private ConnectivityManager.NetworkCallback networkCallback;

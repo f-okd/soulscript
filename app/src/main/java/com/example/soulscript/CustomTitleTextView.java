@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
+// This class is used to create a custom title textview for the registration activity,
+// ...to distinguish it from the login activity.
 public class CustomTitleTextView extends AppCompatTextView {
     public CustomTitleTextView(Context context) {
         super(context);

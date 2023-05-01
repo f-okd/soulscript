@@ -23,6 +23,10 @@ public class DailyVerseService extends Service {
         return null;
     }
 
+    // The onStartCommand() method is called when the service is started.
+	// This method creates a notification channel and builds a notification.
+	// The service then runs in the foreground by calling startForeground() with the notification ID.
+	// The service then calls sendDailyVerseNotification() to send a notification to the user.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
@@ -34,6 +38,7 @@ public class DailyVerseService extends Service {
         return START_NOT_STICKY;
     }
 
+    // The createNotificationChannel() method creates a notification channel for the app.
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Daily Verse Channel";
@@ -46,6 +51,7 @@ public class DailyVerseService extends Service {
         }
     }
 
+    // The sendDailyVerseNotification() method creates an intent that opens the daily verse website.
     private void sendDailyVerseNotification() {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.verseoftheday.com/"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -62,6 +68,7 @@ public class DailyVerseService extends Service {
         notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
+    // The buildDailyVerseNotification() method builds the notification thats used in onStart */
     private Notification buildDailyVerseNotification() {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.verseoftheday.com/"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

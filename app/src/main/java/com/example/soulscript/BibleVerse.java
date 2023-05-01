@@ -23,12 +23,14 @@ public class BibleVerse {
         return explanation;
     }
 
+    // Constructor for creating a BibleVerse object
     public BibleVerse(String vrs, String txt, String exp) {
         verse = vrs;
         text = txt;
         explanation = exp;
     }
 
+    // This method returns the BibleVerse object in JSON format.
     public String toJsonString() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -39,21 +41,6 @@ public class BibleVerse {
             e.printStackTrace();
         }
         return jsonObject.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BibleVerse that = (BibleVerse) o;
-        return Objects.equals(verse, that.verse) &&
-                Objects.equals(text, that.text) &&
-                Objects.equals(explanation, that.explanation);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(verse, text, explanation);
     }
 
 }

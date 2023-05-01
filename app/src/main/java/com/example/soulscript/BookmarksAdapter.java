@@ -10,6 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+
+/*
+* This class extends RecyclerView.Adapter<BookmarkViewHolder> and is responsible for providing the RecyclerView with the data it needs to display the bookmarked verses.
+* It takes an ArrayList of BibleVerse objects and a Context as input.
+* The adapter is responsible for creating view holders using the onCreateViewHolder method and binding the data to each view holder using the onBindViewHolder method.
+* It also handles click events on each bookmark item, which opens the results activity to display the verse details and explanation.
+* */
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
     private ArrayList<BibleVerse> bibleVerses;
     private Context context;
@@ -26,6 +33,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
         return BookmarkViewHolder.create(parent);
     }
 
+    // This method is used to bind the data to the view holder.
     @Override
     public void onBindViewHolder(@NonNull BookmarkViewHolder holder, int position) {
         BibleVerse bibleVerse = bibleVerses.get(position);
@@ -42,6 +50,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
         });
     }
 
+    // This method is used to update the bookmarks list when a new bookmark is added or removed.
     public void setBookmarks(ArrayList<BibleVerse> newBibleVerses) {
         this.bibleVerses = newBibleVerses;
         notifyDataSetChanged();

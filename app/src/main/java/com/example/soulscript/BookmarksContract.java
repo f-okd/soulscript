@@ -2,6 +2,7 @@ package com.example.soulscript;
 
 import android.provider.BaseColumns;
 
+// This class is used to create a contract for the bookmarks database.
 public final class BookmarksContract {
     private BookmarksContract() {}
 

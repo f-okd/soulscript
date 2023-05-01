@@ -1,5 +1,7 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,19 +31,16 @@ import com.example.soulscript.CustomTitleTextView;
 
 public class Registration extends AppCompatActivity {
 
+    // Declare variables:
+    // The code declares several variables to represent UI elements and Firebase authentication objects.
     TextInputEditText editTextEmail, editTextPassword, editTextConfirmPass;
     Button buttonRegister;
     FirebaseAuth mAuth;
     TextView textViewLoginRedirect;
     ProgressBar progressBar;
-    CustomTitleTextView textViewTitle;
 
-
-    /* Check if the user is already signed in
-     * ref:
-     *  https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
-     * */
-
+    // The code checks if a user is logged in. If so, the user is redirected to the home activity.
+    // ref: https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
     @Override
     public void onStart() {
         super.onStart();
@@ -58,16 +57,19 @@ public class Registration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+        // Initialize Firebase authentication objects:
         mAuth = FirebaseAuth.getInstance();
+
+        // Initialize UI elements:
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPass = findViewById(R.id.password_confirm);
         buttonRegister = findViewById(R.id.button_registration);
         textViewLoginRedirect = findViewById(R.id.login_redirect_textview);
         progressBar = findViewById(R.id.progress_bar);
-        textViewTitle = findViewById(R.id.title_textview);
 
-        // Add onclick listener to the login redirect text to send user to login page
+        // Redirect the user to the login activity when the user clicks on the login redirect text view.
         textViewLoginRedirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +79,16 @@ public class Registration extends AppCompatActivity {
             }
         });
 
-
+        /* The code defines an onClickListener for the Register button:
+        * When the user clicks on the Register button, the code checks if the following conditions are met:
+        * - The email field is not empty.
+        * - The password field is not empty.
+        * - The password is strong.
+        * - The password and confirm password fields match.
+        * - The email address is valid.
+        * If the conditions are met, the code creates a user account using the email and password.
+        * If the account creation is successful, the user is redirected to the login activity.
+        * If the account creation is unsuccessful, the user is notified of the failure. */
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,11 +98,6 @@ public class Registration extends AppCompatActivity {
                password = String.valueOf(editTextPassword.getText());
                confirmPass =  String.valueOf(editTextConfirmPass.getText());
 
-               /* - Check if any fields are empty
-               * - Check if password is strong
-               * - Check if password is entered correctly by asking user to confirm
-               * - Check if valid email address is input
-               * */
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Registration.this, "Enter email", Toast.LENGTH_SHORT).show();
                     return;
@@ -117,9 +123,10 @@ public class Registration extends AppCompatActivity {
                     return;
                 }
 
-                /* - Create user account using email and password
-                * - ref: https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
-                * */
+                /* The code creates a user account using the email and password.
+                * If the account creation is successful, the user is redirected to the login activity.
+                * If the account creation is unsuccessful, the user is notified of the failure.
+                * ref:  https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account */
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -150,14 +157,16 @@ public class Registration extends AppCompatActivity {
             }
         });
     }
-    public static boolean isStrongPassword(String password) {
-        /* At least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 digit,...
-        / ...and 1 special character */
+
+    /* The code defines the isStrongPassword() method:
+     * The code checks if the password matches the regular expression pattern.
+     * The regular expression pattern is defined as follows:
+     * At least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character.
+     * Allows exception of eee for the test account */
+    private static boolean isStrongPassword(String password) {
         String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);
-
-        // Check if the password matches the pattern or is "eee" (for the test account to be a valid creation)
         return matcher.matches() || password.equals("eeeeee");
     }
 

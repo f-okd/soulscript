@@ -1,5 +1,7 @@
 package com.example.soulscript;
 
+// Import necessary classes:
+// The code imports several classes from the Android SDK and Firebase Authentication libraries.
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -31,7 +33,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,7 +48,7 @@ import android.view.MotionEvent;
 
 
 public class Home extends AppCompatActivity {
-
+    // Declare variables:
     FirebaseAuth auth;
     TextView textViewUserDetails;
     TextInputEditText userInput;
@@ -58,9 +59,8 @@ public class Home extends AppCompatActivity {
 
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
+    // Instantiate OkHttpClient to make API calls
     OkHttpClient client = new OkHttpClient();
-
-    private NetworkChangeReceiver networkChangeReceiver;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
@@ -71,14 +71,19 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d("Home", "Activity created");
 
+        // Initialize Firebase authentication objects:
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+
+        // Initialize UI elements:
         buttonSettings = findViewById(R.id.settings_button);
         buttonSearch = findViewById(R.id.search_button);
         buttonRecommend = findViewById(R.id.recommendButton);
         buttonBookmarks = findViewById(R.id.bookmarksButton);
         userInput = findViewById(R.id.user_input);
 
+        // Initialize gesture detector:
+        // The code initializes a gesture detector to detect double taps on the home page.
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
@@ -88,7 +93,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        /* If user not logged in, open login activity and close main activity/home page*/
+        // Check if user is logged in:
+        // The code checks if the user is logged in. If not, the user is redirected to the login page.
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
@@ -97,13 +103,8 @@ public class Home extends AppCompatActivity {
             //
         }
 
-        boolean isConnected = isNetworkConnected();
-        buttonSearch.setEnabled(isConnected);
-        buttonRecommend.setEnabled(isConnected);
-        if (!isConnected) {
-            Toast.makeText(Home.this, "The app won't work completely without an internet connection!", Toast.LENGTH_LONG).show();
-        }
-
+        // The code sets an onclick listener for the search button.
+        // When the button is clicked, the app calls the chatgpt api.
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +115,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        // The code sets an onclick listener for the bookmarks button.
+        // When the button is clicked, the app opens the bookmarks activity.
         buttonBookmarks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,6 +124,9 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // The code sets an onclick listener for the settings image button.
+        // When the button is clicked, the app opens the settings activity.
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,6 +135,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        // Listen for network changes:
+        // The code listens for network changes and disables the search and recommend buttons if the network is unavailable.
         networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
@@ -158,10 +166,6 @@ public class Home extends AppCompatActivity {
             }
         };
 
-
-
-        networkChangeReceiver = new NetworkChangeReceiver(networkCallback);
-
         // Schedule daily verse notification
         scheduleDailyVerseNotification();
     }
@@ -169,6 +173,8 @@ public class Home extends AppCompatActivity {
     void errorMessage(String error) {
         Toast.makeText(Home.this, error, Toast.LENGTH_SHORT).show();
     }
+
+    // Used to open results activity with output from chatgpt api
     void PostResult(String output) {
         Log.d("Home", "PostResult called with output: " + output);
         Intent intent = new Intent(getApplicationContext(), Results.class);
@@ -214,6 +220,7 @@ public class Home extends AppCompatActivity {
 
             }
 
+            // Parse response from openai server and send to PostResult function
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
@@ -263,6 +270,7 @@ public class Home extends AppCompatActivity {
         Log.d("Home", "Daily verse notification scheduled for " + calendar.getTime().toString());
     }
 
+    // Register network change receiver when activity is resumed
     @Override
     protected void onResume() {
         super.onResume();
@@ -270,6 +278,7 @@ public class Home extends AppCompatActivity {
         Log.d("Home", "Activity resumed");
     }
 
+    // Unregister network change receiver when activity is paused
     @Override
     protected void onPause() {
         super.onPause();
@@ -277,12 +286,7 @@ public class Home extends AppCompatActivity {
         Log.d("Home", "Activity paused");
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
+    // Check if network is connected
     private void registerNetworkChangeReceiver() {
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
@@ -291,6 +295,7 @@ public class Home extends AppCompatActivity {
         }
     }
 
+    // Unregister network change receiver
     private void unregisterNetworkChangeReceiver() {
         if (connectivityManager != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
