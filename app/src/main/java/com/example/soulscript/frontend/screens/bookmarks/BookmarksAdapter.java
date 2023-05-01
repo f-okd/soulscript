@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend.screens.bookmarks;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.soulscript.frontend.BibleVerse;
+import com.example.soulscript.frontend.screens.Results;
 
 import java.util.ArrayList;
 

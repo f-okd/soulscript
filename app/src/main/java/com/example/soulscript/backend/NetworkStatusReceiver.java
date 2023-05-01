@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.backend;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

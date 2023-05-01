@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend.screens;
 
 // Import necessary classes:
 // The code imports several classes from the Android SDK and Firebase Authentication libraries.
@@ -23,6 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.soulscript.backend.DailyVerseService;
+import com.example.soulscript.R;
+import com.example.soulscript.frontend.screens.bookmarks.Bookmarks;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -267,8 +270,8 @@ public class Home extends AppCompatActivity {
     void callApi(String problemDescription) {
         // https://square.github.io/okhttp/ - get implementation for gradle
         // format prompt with problem description
-        String prompt = String.format("Find me a RANDOM bible verse to help with this problem description " +
-                "and provide an explanation:\n\n%s\n\nSend the response in json format with the fields: verse, text, explanation", problemDescription);
+        String prompt = String.format("Find me a RANDOM bible verse to help with this problem description, " +
+                "and provide an explanation, referencing the problem:\n\n%s\n\nSend the response in json format with the fields: verse, text, explanation", problemDescription);
 
         JSONObject jsonBody = new JSONObject();
         try {

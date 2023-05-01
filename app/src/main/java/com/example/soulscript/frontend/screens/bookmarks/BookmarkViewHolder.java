@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend.screens.bookmarks;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.soulscript.frontend.BibleVerse;
+import com.example.soulscript.R;
 
 /*
 * This class extends RecyclerView.ViewHolder and is responsible for holding and displaying individual bookmarked Bible verses within the RecyclerView.

@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend.screens;
 
 // Import necessary classes:
 // The code imports several classes from the Android SDK and Firebase Authentication libraries.
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Patterns;
 
+import com.example.soulscript.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,8 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import com.example.soulscript.CustomTitleTextView;
-
 
 
 public class Registration extends AppCompatActivity {

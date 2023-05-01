@@ -19,33 +19,33 @@
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
         <activity
-            android:name=".ForgotPassword"
+            android:name=".frontend.screens.ForgotPassword"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".Settings"
+            android:name=".frontend.screens.Settings"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".Results"
+            android:name=".frontend.screens.Results"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".Bookmarks"
+            android:name=".frontend.screens.bookmarks.Bookmarks"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             /> <!-- TODO: CHANGE THEME -->
         <activity
-            android:name=".Registration"
+            android:name=".frontend.screens.Registration"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".Login"
+            android:name=".frontend.screens.Login"
             android:exported="true"
             android:theme="@style/Theme.Material3.Light.NoActionBar">
             <intent-filter>
@@ -55,11 +55,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Home"
+            android:name=".frontend.screens.Home"
             android:exported="true"
             android:configChanges="orientation|screenSize"
             />
-        <service android:name=".DailyVerseService" />
+        <service android:name=".backend.DailyVerseService" />
 
     </application>
 

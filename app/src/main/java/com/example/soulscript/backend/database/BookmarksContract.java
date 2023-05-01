@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.backend.database;
 
 import android.provider.BaseColumns;
 

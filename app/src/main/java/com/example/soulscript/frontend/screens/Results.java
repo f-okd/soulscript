@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend.screens;
 
 // Import necessary classes:
 // The code imports several classes from the Android SDK and Firebase Authentication libraries.
@@ -19,6 +19,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.soulscript.frontend.BibleVerse;
+import com.example.soulscript.backend.database.BookmarksContract;
+import com.example.soulscript.backend.database.BookmarksDbHelper;
+import com.example.soulscript.R;
+import com.example.soulscript.frontend.screens.bookmarks.Bookmarks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

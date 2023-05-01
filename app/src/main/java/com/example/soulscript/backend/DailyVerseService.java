@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.backend;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,6 +12,8 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import com.example.soulscript.R;
 
 public class DailyVerseService extends Service {
     private static final String CHANNEL_ID = "daily_verse_channel";

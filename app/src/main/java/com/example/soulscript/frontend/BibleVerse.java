@@ -1,4 +1,4 @@
-package com.example.soulscript;
+package com.example.soulscript.frontend;
 
 import org.json.JSONObject;
 
