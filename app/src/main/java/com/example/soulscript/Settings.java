@@ -5,10 +5,12 @@ package com.example.soulscript;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,8 @@ public class Settings extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private RadioGroup radioGroup;
+    private RadioButton radioButtonYes;
+    private RadioButton radioButtonNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,8 @@ public class Settings extends AppCompatActivity {
         editTextConfirmNewPassword = findViewById(R.id.confirm_new_password);
         textViewUserDetails = findViewById(R.id.user_details);
         radioGroup = findViewById(R.id.radio_group);
+        radioButtonYes = findViewById(R.id.radio_button_yes);
+        radioButtonNo = findViewById(R.id.radio_button_no);
 
         // Check if user is logged in:
         // The code checks if a user is logged in. If not, the user is redirected to the login activity.
@@ -102,6 +108,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        initializeRadioButtons();
+
     }
 
     // The code defines the updatePassword() method:
@@ -130,4 +138,29 @@ public class Settings extends AppCompatActivity {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches() || password.equals("eeeeee");
     }
+    /* This method does 2 things:
+     1. initialises the radio buttons and set their checked state based on the stored preference.
+     2. Adds a listener to the RadioGroup to update the SharedPreferences when the user changes their selection. */
+    private void initializeRadioButtons() {
+        SharedPreferences sharedPreferences = getSharedPreferences("app_settings", MODE_PRIVATE);
+        boolean dailyNotificationsEnabled = sharedPreferences.getBoolean("daily_notifications_enabled", true);
+
+        RadioGroup radioGroup = findViewById(R.id.radio_group);
+        RadioButton radioButtonYes = findViewById(R.id.radio_button_yes);
+        RadioButton radioButtonNo = findViewById(R.id.radio_button_no);
+
+        radioButtonYes.setChecked(dailyNotificationsEnabled);
+        radioButtonNo.setChecked(!dailyNotificationsEnabled);
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (checkedId == R.id.radio_button_yes) {
+                editor.putBoolean("daily_notifications_enabled", true);
+            } else {
+                editor.putBoolean("daily_notifications_enabled", false);
+            }
+            editor.apply();
+        });
+    }
+
 }

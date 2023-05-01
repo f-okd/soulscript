@@ -10,14 +10,13 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.textclassifier.TextLinks;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -252,23 +251,30 @@ public class Home extends AppCompatActivity {
 
     // Schedule daily verse notification using AlarmManager
     private void scheduleDailyVerseNotification() {
-        Intent serviceIntent = new Intent(Home.this, DailyVerseService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(Home.this, 0, serviceIntent, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("app_settings", MODE_PRIVATE);
+        boolean dailyNotificationsEnabled = sharedPreferences.getBoolean("daily_notifications_enabled", true);
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 8); // Set the desired time, e.g., 8 AM
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        if (dailyNotificationsEnabled) {
+            Intent serviceIntent = new Intent(Home.this, DailyVerseService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(Home.this, 0, serviceIntent, 0);
 
-        if (calendar.before(Calendar.getInstance())) {
-            calendar.add(Calendar.DATE, 1); // If it's past the desired time, schedule for the next day
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 8); // Set the desired time, 8 AM
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            //calendar.add(Calendar.SECOND, 30); // For testing purposes, set the alarm to go off 30 seconds after scheduling
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1); // If it's past the desired time, schedule for the next day
+            }
+
+            // Repeat the alarm every day
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            Log.d("Home", "Daily verse notification scheduled for " + calendar.getTime().toString());
         }
-
-        // Repeat the alarm every day
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        Log.d("Home", "Daily verse notification scheduled for " + calendar.getTime().toString());
     }
+
 
     // Register network change receiver when activity is resumed
     @Override
