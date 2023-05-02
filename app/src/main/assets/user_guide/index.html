@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s4xamKPAeM3DP4w" crossorigin="anonymous">
+    <!-- Add custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="bg-primary text-white py-3">
+    <h1 class="text-center">Welcome to the Soulscript User Guide</h1>
+</header>
+
+<main class="container mt-4">
+    <h2 class="mb-4">App Overview</h2>
+    <p>The app takes in user problem description and makes API call to open ai chatgpt API using okhttp3 to get a bible verse with a relevant explanation.</p>
+
+    <h2 class="mb-4">Login Page</h2>
+    <img src="images/Login.PNG" alt="Login page image" />
+    <ul>
+        <li>User can log in with a registered email and password</li>
+        <li>Test account details are username: eee@eee.com</li>
+        <li>Test account password: eeeeee</li>
+        <li>User can also click "forgot password" textview to open the forgot password page</li>
+        <li>If they do not have an account they can click "Create Account" Textview to go to registration page and make an account</li>
+    </ul>
+
+    <h2 class="mb-4">Forgot Password Page</h2>
+    <img src="images/ForgotPassword.PNG" alt="Forgot password page image" />
+    <ul>
+        <li>User is asked to enter an email, the email is checked to make sure that it is a valid input</li>
+        <li>User is sent a password reset email sent to them using the firebase sendPasswordResetEmail() method</li>
+    </ul>
+
+    <h2 class="mb-4">Registration Page</h2>
+    <img src="images/Registration.PNG" alt="Registration page image" />
+    <ul>
+        <li>User is asked to enter an email and matching passwords</li>
+        <li>The account won't be created unless a valid email and password is entered otherwise a toast will be sent asking for the correct inputs</li>
+        <li>Account is created using Firebase is used for authentication</li>
+        <li>If you already have an account you can click the "Already have an account" textview and return to the login page</li>
+    </ul>
+
+    <h2 class="mb-4">Home Page</h2>
+    <img src="images/Query.PNG" alt="Home page image with search terms entered" />
+    <ul>
+        <li>Once logged in, the app opens on the home page</li>
+        <li>You can click the cog imagebutton to open the settings</li>
+        <li>You can enter a problem description and press search, which will open the results page with a bible verse and an explanation relevant to the problem at hand</li>
+        <li>Unfortunately during peak loads, the API can be unresponsive and timeout, you may have to try again at a later time.</li>
+        <li>Additionally you can't search for verses without an internet connection</li>
+        <li>You can also get a recommendation based on your bookmarked verses, it will try to recommend a verse with similar themes</li>
+        <li>You can also click the bookmarks button and open the bookmarks page</li>
+    </ul>
+
+    <h2 class="mb-4">Settings Page</h2>
+    <img src="images/Settings.PNG" alt="Settings page image" />
+    <ul>
+        <li>On the settings page the user can opt in to daily notifications, and their preference will be saved.</li>
+        <li>They can also change their password and sign out on this page</li>
+    </ul>
+
+    <h2 class="mb-4">Bookmarks Page</h2>
+    <img src="images/Bookmarks.PNG" alt="Bookmarks page image" />
+    <ul>
+        <li>This page shows a list of a user's bookmarked verses, when you click on one it opens the results page with the verse and explanation.</li>
+        <li>If you open the app without an internet connection the bookmarks will be populated by the local database.</li>
+    </ul>
+
+    <h2 class="mb-4">Results Page</h2>
+    <img src="images/Result.PNG" alt="Results page image" />
+    <ul>
+        <li>This page is opened when the user searches for a verse for their problem or searches for a recommended verse or clicks a bookmarked verse in the bookmarks page</li>
+        <li>It displays the verse in the top textview and the explanation in the bottom textview</li>
+        <li>You can click the share image button and it lets you send a text to share the verse and explanation to someone who needs it</li>
+    </ul>
+</main>
+
+
+
+<footer class="bg-primary text-white py-3 text-center">
+    <p>Soulscript &copy; 2023</p>
+</footer>
+
+<!-- Add Bootstrap JavaScript and its dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s4xamKPAeM3DP4w" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBzAg3z3j6d0y4X0X6B4U2LZOZ6nGZ2w7mWf2JzJFTfEeCt" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s4xamKPAeM3DP4w" crossorigin="anonymous"></script>
+<!-- Add custom JavaScript -->
+<script src="scripts.js"></script>
+</body>
+</html>

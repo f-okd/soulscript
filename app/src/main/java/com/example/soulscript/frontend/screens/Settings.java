@@ -26,14 +26,14 @@ import java.util.regex.Pattern;
 public class Settings extends AppCompatActivity {
     // Declare variables:
     // The code declares several variables to represent UI elements and Firebase authentication objects.
-    private Button buttonLogout, buttonChangePassword;
-    private TextInputEditText editTextNewPassword, editTextConfirmNewPassword;
-    private TextView textViewUserDetails;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-    private RadioGroup radioGroup;
-    private RadioButton radioButtonYes;
-    private RadioButton radioButtonNo;
+    Button buttonLogout, buttonChangePassword, buttonUserGuide;
+    TextInputEditText editTextNewPassword, editTextConfirmNewPassword;
+    TextView textViewUserDetails;
+    FirebaseAuth auth;
+    FirebaseUser user;
+    RadioGroup radioGroup;
+    RadioButton radioButtonYes;
+    RadioButton radioButtonNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class Settings extends AppCompatActivity {
         // The code initializes the UI elements by finding their references using their unique IDs, which are defined in an XML file.
         buttonLogout = findViewById(R.id.logout);
         buttonChangePassword = findViewById(R.id.change_password_button);
+        buttonUserGuide = findViewById(R.id.user_guide_button);
         editTextNewPassword = findViewById(R.id.new_password);
         editTextConfirmNewPassword = findViewById(R.id.confirm_new_password);
         textViewUserDetails = findViewById(R.id.user_details);
@@ -64,6 +65,14 @@ public class Settings extends AppCompatActivity {
         } else {
             textViewUserDetails.setText(user.getEmail());
         }
+
+        buttonUserGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Settings.this, UserGuide.class);
+                startActivity(intent);
+            }
+        });
 
 
         /* The code initializes the change password button click listener:

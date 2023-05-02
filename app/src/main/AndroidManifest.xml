@@ -5,9 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
     <application
         android:allowBackup="true"
@@ -19,31 +17,29 @@
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
         <activity
+            android:name=".frontend.screens.UserGuide"
+            android:exported="false" />
+        <activity
             android:name=".frontend.screens.ForgotPassword"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
-            />
+            android:exported="false" />
         <activity
             android:name=".frontend.screens.Settings"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
-            />
+            android:exported="false" />
         <activity
             android:name=".frontend.screens.Results"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
-            />
+            android:exported="false" />
         <activity
             android:name=".frontend.screens.bookmarks.Bookmarks"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
-            /> <!-- TODO: CHANGE THEME -->
+            android:exported="false" /> <!-- TODO: CHANGE THEME -->
         <activity
             android:name=".frontend.screens.Registration"
-            android:exported="false"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:configChanges="orientation|screenSize"
-            />
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".frontend.screens.Login"
             android:exported="true"
@@ -56,11 +52,10 @@
         </activity>
         <activity
             android:name=".frontend.screens.Home"
-            android:exported="true"
             android:configChanges="orientation|screenSize"
-            />
-        <service android:name=".backend.DailyVerseService" />
+            android:exported="true" />
 
+        <service android:name=".backend.DailyVerseService" />
     </application>
 
 </manifest>
