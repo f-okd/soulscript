@@ -24,14 +24,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:id="@+id/user_guide_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Guide"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/user_guide"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
 
         <TextView
             android:id="@+id/user_details"
@@ -42,7 +43,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toBottomOf="@+id/user_guide_button" />
 
         <TextView
             android:id="@+id/notifications"

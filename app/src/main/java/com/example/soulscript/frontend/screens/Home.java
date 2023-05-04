@@ -270,76 +270,84 @@ public class Home extends AppCompatActivity {
 
     // Send request to chatgpt api using okhttp
     void callApi(String problemDescription) {
-        showProgressBarAndDisableButtons();
-        new CallApiTask().execute(problemDescription);
-    }
+        // https://square.github.io/okhttp/ - get implementation for gradle
+        // format prompt with problem description
+        // Very in depth prompt required because lots of issues using this api - can vary based on input
+        String prompt = String.format("Find me a RANDOM bible verse to help with this problem description " +
+                "and provide an explanation:\n\n%s\n\n Send the response in json format with the fields: verse, text, explanation. Use single quotation marks for speech marks, reserve double quotation marks for json formatting to avoid syntax errors. example output: {\n" +
+                "    \"verse\": \"John 14:18\",\n" +
+                "    \"text\": \"I will not leave you as orphans; I will come to you.\",\n" +
+                "    \"explanation\": \"This verse is a reminder that even though our earthly fathers may pass away, we are never truly alone. God is always with us and will never leave us. He is our heavenly Father and He will always be there to comfort us in our time of need.\"\n" +
+                "}", problemDescription);
 
-    private class CallApiTask extends AsyncTask<String, Void, String> {
+        JSONObject jsonBody = new JSONObject();
+        try {
+            // Create  completion: https://platform.openai.com/docs/api-reference/completions/create
+            jsonBody.put("model", "text-davinci-003");
+            jsonBody.put("prompt", prompt);
+            jsonBody.put("max_tokens", 2000);
+            jsonBody.put("temperature", 0);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+        Request request = new Request.Builder()
+                .url("https://api.openai.com/v1/completions")
+                .header("Authorization", "Bearer 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")
+                .post(body)
+                .build();
 
-        @Override
-        protected String doInBackground(String... problemDescriptions) {
-            String problemDescription = problemDescriptions[0];
-
-            // Check if any fields are empty
-            if (TextUtils.isEmpty(problemDescription)) {
-                runOnUiThread(() -> {
-                    Toast.makeText(Home.this, "Please type something first", Toast.LENGTH_SHORT).show();
-                    hideProgressBarAndEnableButtons();
+        // Post to openai server using okhttp: https://square.github.io/okhttp/#post-to-a-server
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("Home", "API request failed: " + e.getMessage());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        errorMessage("Failed to load response due to "+e.getMessage());
+                    }
                 });
-                return null;
+
             }
 
-            // The rest of the code in the callApi method
-            String prompt = String.format("Find me a RANDOM bible verse to help with this problem description, " +
-                    "and provide an explanation, referencing the problem:\n\n%s\n\nSend the response in json format with the fields: verse, text, explanation", problemDescription);
-
-            JSONObject jsonBody = new JSONObject();
-            try {
-                jsonBody.put("model", "text-davinci-003");
-                jsonBody.put("prompt", prompt);
-                jsonBody.put("max_tokens", 2000);
-                jsonBody.put("temperature", 0);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
-            Request request = new Request.Builder()
-                    .url("https://api.openai.com/v1/completions")
-                    .header("Authorization", "Bearer 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")
-                    .post(body)
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-
+            // Parse response from openai server and send to PostResult function
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-                    JSONArray jsonArray = jsonObject.getJSONArray("choices");
-                    return jsonArray.getJSONObject(0).getString("text");
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response.peekBody(Long.MAX_VALUE).string());
+                        // Log raw response from the API
+                        Log.d("Home", "API response: " + jsonObject.toString());
+                        JSONArray jsonArray = jsonObject.getJSONArray("choices");
+                        String result = jsonArray.getJSONObject(0).getString("text");
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                PostResult(result);
+                            }
+                        });
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Log.d("Home", "API request successful");
+
                 } else {
-                    runOnUiThread(() -> {
-                        errorMessage("Failed to load response due to " + response.body().toString());
+                    Log.e("Home", "API request unsuccessful: " + response.body().toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            errorMessage("Failed to load response due to "+response.body().toString());
+                        }
                     });
-                    return null;
                 }
-
-            } catch (IOException | JSONException e) {
-                runOnUiThread(() -> {
-                    errorMessage("Failed to load response due to " + e.getMessage());
-                });
-                return null;
             }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                PostResult(result);
-            } else {
-                hideProgressBarAndEnableButtons();
-            }
-        }
+        });
     }
+
 
     // Schedule daily verse notification using AlarmManager
     private void scheduleDailyVerseNotification() {

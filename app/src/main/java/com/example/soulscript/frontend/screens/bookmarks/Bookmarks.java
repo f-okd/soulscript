@@ -20,12 +20,15 @@ import com.example.soulscript.backend.database.BookmarksContract;
 import com.example.soulscript.backend.database.BookmarksDbHelper;
 import com.example.soulscript.backend.NetworkStatusReceiver;
 import com.example.soulscript.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -61,7 +64,12 @@ public class Bookmarks extends AppCompatActivity {
         // Initialize the RecyclerView and its adapter
         bookmarksRecyclerView = findViewById(R.id.bookmarks_recycler_view);
         bookmarksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        bookmarksAdapter = new BookmarksAdapter(this, new ArrayList<>());
+        bookmarksAdapter = new BookmarksAdapter(this, new ArrayList<>(), new BookmarksAdapter.OnDeleteClickListener() {
+            @Override
+            public void onDeleteClick(BibleVerse bibleVerse) {
+                deleteVerseFromFirebase(bibleVerse);
+            }
+        });
         bookmarksRecyclerView.setAdapter(bookmarksAdapter);
 
         // Initialize the local database
@@ -72,18 +80,14 @@ public class Bookmarks extends AppCompatActivity {
         valueEventListener = bookmarkRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange called.");
                 ArrayList<BibleVerse> bibleVerses = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     BibleVerse bibleVerse = snapshot.getValue(BibleVerse.class);
                     bibleVerses.add(bibleVerse);
                 }
-                bookmarksAdapter = new BookmarksAdapter(Bookmarks.this, bibleVerses);
-                bookmarksRecyclerView.setAdapter(bookmarksAdapter);
-                Log.d(TAG, "Bookmark data changed. Total bookmarks: " + bibleVerses.size());
 
-                bookmarksAdapter = new BookmarksAdapter(Bookmarks.this, bibleVerses);
-                bookmarksRecyclerView.setAdapter(bookmarksAdapter);
-                Log.d(TAG, "Bookmark data changed. Total bookmarks: " + bibleVerses.size());
+                bookmarksAdapter.setBookmarks(bibleVerses); // Update the adapter with the new list of verses
 
                 // Update local bookmarks
                 updateLocalBookmarks(bibleVerses);
@@ -131,6 +135,29 @@ public class Bookmarks extends AppCompatActivity {
         bookmarksAdapter.setBookmarks(localBookmarks);
         Log.d(TAG, "loadLocalBookmarks() method called.");
     }
+
+    // Delete a bookmark from the Firebase Realtime Database using the verse name as the key
+    private void deleteVerseFromFirebase(BibleVerse bibleVerse) {
+        // Query the Firebase Realtime Database to find the verse with the matching name value
+        Query query = bookmarkRef.orderByChild("verse").equalTo(bibleVerse.getVerse());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Remove the verse with the matching name value
+                    snapshot.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to delete the Bible verse.", databaseError.toException());
+            }
+        });
+    }
+
+
 
     // Update the local bookmarks table with the latest bookmarks from the Firebase Realtime Database
     private void updateLocalBookmarks(ArrayList<BibleVerse> bibleVerses) {

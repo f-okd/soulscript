@@ -23,10 +23,16 @@ import java.util.ArrayList;
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
     private ArrayList<BibleVerse> bibleVerses;
     private Context context;
+    private OnDeleteClickListener onDeleteClickListener;
+    public interface OnDeleteClickListener {
+        void onDeleteClick(BibleVerse bibleVerse);
+    }
 
-    public BookmarksAdapter(Context context, ArrayList<BibleVerse> bibleVerses) {
+
+    public BookmarksAdapter(Context context, ArrayList<BibleVerse> bibleVerses, OnDeleteClickListener onDeleteClickListener) {
         this.context = context;
         this.bibleVerses = bibleVerses;
+        this.onDeleteClickListener = onDeleteClickListener;
     }
 
     @NonNull
@@ -40,7 +46,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarkViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BookmarkViewHolder holder, int position) {
         BibleVerse bibleVerse = bibleVerses.get(position);
-        holder.bind(bibleVerse);
+        holder.bind(bibleVerse, onDeleteClickListener);
         Log.d("BookmarksAdapter", "Binding data for position: " + position + " with verse: " + bibleVerse.getVerse());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

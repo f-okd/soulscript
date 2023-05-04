@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Guide</title>
     <!-- Add Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s4xamKPAeM3DP4w" crossorigin="anonymous">
+    <!-- (Bootstrap) Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>    <!-- (Bootstrap) Optional theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
     <!-- Add custom CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,64 +22,84 @@
     <p>The app takes in user problem description and makes API call to open ai chatgpt API using okhttp3 to get a bible verse with a relevant explanation.</p>
 
     <h2 class="mb-4">Login Page</h2>
-    <img src="images/Login.PNG" alt="Login page image" />
+    <img src="images/Login.png" alt="Login page image" /><br><br>
     <ul>
-        <li>User can log in with a registered email and password</li>
-        <li>Test account details are username: eee@eee.com</li>
-        <li>Test account password: eeeeee</li>
-        <li>User can also click "forgot password" textview to open the forgot password page</li>
-        <li>If they do not have an account they can click "Create Account" Textview to go to registration page and make an account</li>
-    </ul>
+        <li>To log in, enter your registered email and password into the login form.</li>
+        <li>If you're testing the app, you can use the following test account details:
+            <ul>
+                <li>Username: eee@eee.com</li>
+                <li>Password: eeeeee</li>
+            </ul>
+        </li>
+        <li>If you've forgotten your password, click the "forgot password" text on the login form to open the forgot password page. From there, you can reset your password.</li>
+        <li>If you don't have an account, click the "Create Account" text on the login form to go to the registration page and create a new account.</li>
+    </ul><br><br><br>
 
     <h2 class="mb-4">Forgot Password Page</h2>
-    <img src="images/ForgotPassword.PNG" alt="Forgot password page image" />
+    <img src="images/ForgotPassword.png" alt="Forgot password page image" /><br><br>
     <ul>
-        <li>User is asked to enter an email, the email is checked to make sure that it is a valid input</li>
-        <li>User is sent a password reset email sent to them using the firebase sendPasswordResetEmail() method</li>
-    </ul>
+        <li>To reset your password, follow these steps:</li>
+        <li>Enter your email address in the provided input field. The email address will be checked to ensure it is valid.</li>
+        <li>Click the "Reset Password" button to send a password reset email to your email address.</li>
+        <li>Open your email account and locate the password reset email from us. If you can't find the email in your inbox, check your spam or junk folder.</li>
+        <li>Follow the instructions in the email to reset your password. You will be prompted to enter a new password for your account.</li>
+    </ul><br><br><br>
 
     <h2 class="mb-4">Registration Page</h2>
-    <img src="images/Registration.PNG" alt="Registration page image" />
+    <img src="images/Registration.png" alt="Registration page image" /><br><br>
     <ul>
-        <li>User is asked to enter an email and matching passwords</li>
-        <li>The account won't be created unless a valid email and password is entered otherwise a toast will be sent asking for the correct inputs</li>
-        <li>Account is created using Firebase is used for authentication</li>
-        <li>If you already have an account you can click the "Already have an account" textview and return to the login page</li>
-    </ul>
+        <li>To create an account, follow these steps:</li>
+        <li>Enter a valid email address and a matching password into the provided input fields. The password must be at least 8 characters long and contain a mixture of uppercase and lowercase letters, numbers, and special characters.</li>
+        <li>Click the "Create Account" button to create your account. If the email and password inputs are not valid, a message will be displayed to prompt you to enter valid inputs.</li>
+        <li>If you already have an account, click the "Already have an account" text on the registration page to return to the login page.</li>
+    </ul><br><br><br>
 
     <h2 class="mb-4">Home Page</h2>
-    <img src="images/Query.PNG" alt="Home page image with search terms entered" />
+    <img src="images/Query.PNG" alt="Home page image with search terms entered" /><br><br>
     <ul>
-        <li>Once logged in, the app opens on the home page</li>
-        <li>You can click the cog imagebutton to open the settings</li>
-        <li>You can enter a problem description and press search, which will open the results page with a bible verse and an explanation relevant to the problem at hand</li>
-        <li>Unfortunately during peak loads, the API can be unresponsive and timeout, you may have to try again at a later time.</li>
-        <li>Additionally you can't search for verses without an internet connection</li>
-        <li>You can also get a recommendation based on your bookmarked verses, it will try to recommend a verse with similar themes</li>
-        <li>You can also click the bookmarks button and open the bookmarks page</li>
-    </ul>
-
-    <h2 class="mb-4">Settings Page</h2>
-    <img src="images/Settings.PNG" alt="Settings page image" />
-    <ul>
-        <li>On the settings page the user can opt in to daily notifications, and their preference will be saved.</li>
-        <li>They can also change their password and sign out on this page</li>
-    </ul>
-
-    <h2 class="mb-4">Bookmarks Page</h2>
-    <img src="images/Bookmarks.PNG" alt="Bookmarks page image" />
-    <ul>
-        <li>This page shows a list of a user's bookmarked verses, when you click on one it opens the results page with the verse and explanation.</li>
-        <li>If you open the app without an internet connection the bookmarks will be populated by the local database.</li>
-    </ul>
+        <li>After logging in, the app will open to the home page.</li>
+        <li>Click the gear icon in the top right corner to open the settings menu.</li>
+        <li>To find a Bible verse related to a particular problem, enter a problem description into the search field and click the "Search" button. The results page will display a relevant Bible verse and an explanation for the verse based on the problem description.</li>
+        <!--TODO: FACT CHECK
+         <li>Please note that during peak loads, the API may become unresponsive and time out. If this happens, try again later.</li> -->
+        <li>You must have an internet connection to search for verses.</li>
+        <li>To receive a recommendation based on your bookmarked verses, click the "Get Recommendation" button. The app will suggest a verse with similar themes to your bookmarked verses.</li>
+        <li>Click the bookmarks icon in the top right corner to open the bookmarks page, where you can view and manage your bookmarked verses.</li>
+    </ul><br><br><br>
 
     <h2 class="mb-4">Results Page</h2>
-    <img src="images/Result.PNG" alt="Results page image" />
+    <img src="images/Result.PNG" alt="Results page image" /><br><br>
     <ul>
-        <li>This page is opened when the user searches for a verse for their problem or searches for a recommended verse or clicks a bookmarked verse in the bookmarks page</li>
-        <li>It displays the verse in the top textview and the explanation in the bottom textview</li>
-        <li>You can click the share image button and it lets you send a text to share the verse and explanation to someone who needs it</li>
+        <li>The results page is opened when you search for a verse to help with your problem, click the recommend button, or click on a bookmarked verse from the bookmarks page.</li>
+        <li>The top textview displays the Bible verse that was returned by the API, while the bottom textview displays an explanation of the verse.</li>
+        <li>You can click the share icon to share the verse and explanation with someone who needs it via supporting apps.</li>
+    </ul><br><br><br>
+
+    <h2 class="mb-4">Settings Page</h2>
+    <img src="images/Settings.PNG" alt="Settings page image" /><br><br>
+    <ul>
+        <li>On the settings page, you can choose to receive daily notifications by checking the appropriate checkbox. Your preference will be saved and you will receive a daily notification with a Bible verse and explanation based on your preferences.</li>
+        <li>You can also change your password or sign out of the app from the settings page.</li>
+    </ul><br><br><br>
+
+    <h2 class="mb-4">Bookmarks Page</h2>
+    <img src="images/Bookmarks.PNG" alt="Bookmarks page image" /><br><br>
+    <ul>
+        <li>The bookmarks page displays a list of all the Bible verses that you have bookmarked. When you click on a verse, it will open the results page with the verse and explanation.</li>
+        <li>If you open the app without an internet connection, the bookmarks will be populated from the local database and you will still be able to view your saved verses.</li>
+        <li>You can delete a bookmark by clicking the delete button next to the corresponding verse on the bookmarks page.</li>
+    </ul><br><br><br>
+
+
+    <h2 class="mb-4">Troubleshooting</h2>
+    <img src="images/Troubleshooting.jpg" alt="Troubleshooting icon" /><br><br>
+    <ul>
+        <li>This app uses the ChatGPT API, which may be slow. Please be patient and wait for the app to return a response.</li>
+        <li>If you encounter a timeout error while searching for a Bible verse, please try the search again at a later time.</li>
+        <li>If the Search and Recommend button are disabled, check your internet connection. The button is automatically disabled when you have no signal.</li>
+        <li>If you have any other support inquiries, please contact O.Okude-20@student.lboro.ac.uk.</li>
     </ul>
+
 </main>
 
 

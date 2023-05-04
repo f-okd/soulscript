@@ -38,4 +38,16 @@ public class BookmarkViewHolder extends RecyclerView.ViewHolder {
         Log.d("BookmarkViewHolder", "Binding data with verse: " + bibleVerse.getVerse());
     }
 
+    public void bind(BibleVerse bibleVerse, BookmarksAdapter.OnDeleteClickListener onDeleteClickListener) {
+        verseText.setText(bibleVerse.getVerse());
+        Log.d("BookmarkViewHolder", "Binding data with verse: " + bibleVerse.getVerse());
+
+        itemView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDeleteClickListener.onDeleteClick(bibleVerse);
+            }
+        });
+    }
+
 }
