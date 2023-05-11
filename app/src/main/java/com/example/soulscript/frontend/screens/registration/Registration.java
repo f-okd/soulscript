@@ -1,4 +1,4 @@
-package com.example.soulscript.frontend.screens;
+package com.example.soulscript.frontend.screens.registration;
 
 // Import necessary classes:
 // The code imports several classes from the Android SDK and Firebase Authentication libraries.
@@ -16,6 +16,8 @@ import android.widget.Toast;
 import android.util.Patterns;
 
 import com.example.soulscript.R;
+import com.example.soulscript.frontend.screens.Home;
+import com.example.soulscript.frontend.screens.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;

@@ -36,7 +36,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="false" /> <!-- TODO: CHANGE THEME -->
         <activity
-            android:name=".frontend.screens.Registration"
+            android:name=".frontend.screens.registration.Registration"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />

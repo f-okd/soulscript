@@ -75,7 +75,7 @@ public class Settings extends AppCompatActivity {
         });
 
 
-        /* The code initializes the change password button click listener:
+        /* The code initialises the change password button click listener:
         * When the button is clicked, the code retrieves the new password and confirms the new password from the text fields.
         * If the passwords match, and is strong, the code calls the updatePassword() method to update the user's password. */
         buttonChangePassword.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +118,7 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        initializeRadioButtons();
+        initialiseRadioButtons();
 
     }
 
@@ -152,7 +152,7 @@ public class Settings extends AppCompatActivity {
     /* This method does 2 things:
      1. initialises the radio buttons and set their checked state based on the stored preference.
      2. Adds a listener to the RadioGroup to update the SharedPreferences when the user changes their selection. */
-    private void initializeRadioButtons() {
+    private void initialiseRadioButtons() {
         SharedPreferences sharedPreferences = getSharedPreferences("app_settings", MODE_PRIVATE);
         boolean dailyNotificationsEnabled = sharedPreferences.getBoolean("daily_notifications_enabled", true);
 

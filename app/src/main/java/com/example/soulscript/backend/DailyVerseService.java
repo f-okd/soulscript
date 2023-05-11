@@ -31,12 +31,16 @@ public class DailyVerseService extends Service {
 	// The service then calls sendDailyVerseNotification() to send a notification to the user.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent.getBooleanExtra("stop_foreground", false)) {
+            stopForeground(true);
+        }
         createNotificationChannel();
         Notification notification = buildDailyVerseNotification();
-        startForeground(NOTIFICATION_ID, notification);
 
-        createNotificationChannel();
-        sendDailyVerseNotification();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+
+        startForeground(NOTIFICATION_ID, notification);
         return START_NOT_STICKY;
     }
 
@@ -53,26 +57,10 @@ public class DailyVerseService extends Service {
         }
     }
 
-    // The sendDailyVerseNotification() method creates an intent that opens the daily verse website.
-    private void sendDailyVerseNotification() {
-        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.verseoftheday.com/"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Daily Verse")
-                .setContentText("Checkout today's daily verse!")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
     // The buildDailyVerseNotification() method builds the notification thats used in onStart */
     private Notification buildDailyVerseNotification() {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.verseoftheday.com/"));
+        notificationIntent.putExtra("stop_foreground", true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)

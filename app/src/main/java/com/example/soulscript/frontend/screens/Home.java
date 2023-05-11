@@ -127,7 +127,14 @@ public class Home extends AppCompatActivity {
             public void onClick(View view) {
                 showProgressBarAndDisableButtons();
                 String message = String.valueOf(userInput.getText());
-                callApi(message);
+                String prompt = String.format("I asked someone how they're feeling and they said:\n\n'%s'\n\nFind me a RANDOM bible verse to help with this " +
+                        "and provide an explanation.\n\nSend the response in json format with the fields: verse, text, explanation. Use single quotation marks for speech marks, reserve double quotation marks for json formatting to avoid syntax errors. example output: {\n" +
+                        "    \"verse\": \"John 14:18\",\n" +
+                        "    \"text\": \"I will not leave you as orphans; I will come to you.\",\n" +
+                        "    \"explanation\": \"This verse is a reminder that even though our earthly fathers may pass away, we are never truly alone. God is always with us and will never leave us. He is our heavenly Father and He will always be there to comfort us in our time of need.\"\n" +
+                        "}", message);
+
+                callApi(prompt);
                 Log.d("Home", "Search button clicked");
 
             }
@@ -172,10 +179,14 @@ public class Home extends AppCompatActivity {
                         }
 
                         // Create a message containing the most recent bookmarked verses
-                        String message = "Ignore what was said previously. Please recommend a verse that has the same themes as these verses: " + verses.toString();
+                        String prompt = "Please recommend a verse that has the same themes as these verses, with an explanation,: " + verses.toString() + "Send the response in json format with the fields: verse, text, explanation. Use single quotation marks for speech marks, reserve double quotation marks for json formatting to avoid syntax errors. example output: {\\n\" +\n" +
+                                "                \"    \\\"verse\\\": \\\"John 14:18\\\",\\n\" +\n" +
+                                "                \"    \\\"text\\\": \\\"I will not leave you as orphans; I will come to you.\\\",\\n\" +\n" +
+                                "                \"    \\\"explanation\\\": \\\"This verse is a reminder that even though our earthly fathers may pass away, we are never truly alone. God is always with us and will never leave us. He is our heavenly Father and He will always be there to comfort us in our time of need.\\\"\\n\" +\n" +
+                                "                \"}\"";
 
                         // Make an API call using the message with the most recent bookmarked verses
-                        callApi(message);
+                        callApi(prompt);
                         Log.d("Home", "Recommend button clicked");
                     }
 
@@ -255,38 +266,40 @@ public class Home extends AppCompatActivity {
     }
 
     void errorMessage(String error) {
-        Toast.makeText(Home.this, error, Toast.LENGTH_SHORT).show();
-        hideProgressBarAndEnableButtons();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(Home.this, error, Toast.LENGTH_SHORT).show();
+                hideProgressBarAndEnableButtons();
+            }
+        });
     }
 
-    // Used to open results activity with output from chatgpt api
-    void PostResult(String output) {
-        Log.d("Home", "PostResult called with output: " + output);
-        Intent intent = new Intent(getApplicationContext(), Results.class);
-        intent.putExtra("resultText", output);
-        startActivity(intent);
-        hideProgressBarAndEnableButtons();
+    void postResult(String output) {
+        Log.d("Home", "postResult called with output: " + output);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(), Results.class);
+                intent.putExtra("resultText", output);
+                startActivity(intent);
+                hideProgressBarAndEnableButtons();
+            }
+        });
     }
+
 
     // Send request to chatgpt api using okhttp
-    void callApi(String problemDescription) {
-        // https://square.github.io/okhttp/ - get implementation for gradle
-        // format prompt with problem description
-        // Very in depth prompt required because lots of issues using this api - can vary based on input
-        String prompt = String.format("Find me a RANDOM bible verse to help with this problem description " +
-                "and provide an explanation:\n\n%s\n\n Send the response in json format with the fields: verse, text, explanation. Use single quotation marks for speech marks, reserve double quotation marks for json formatting to avoid syntax errors. example output: {\n" +
-                "    \"verse\": \"John 14:18\",\n" +
-                "    \"text\": \"I will not leave you as orphans; I will come to you.\",\n" +
-                "    \"explanation\": \"This verse is a reminder that even though our earthly fathers may pass away, we are never truly alone. God is always with us and will never leave us. He is our heavenly Father and He will always be there to comfort us in our time of need.\"\n" +
-                "}", problemDescription);
-
+    void callApi(String prompt) {
+        Log.d("Home", "callApi called with prompt: " + prompt);
         JSONObject jsonBody = new JSONObject();
         try {
             // Create  completion: https://platform.openai.com/docs/api-reference/completions/create
             jsonBody.put("model", "text-davinci-003");
             jsonBody.put("prompt", prompt);
-            jsonBody.put("max_tokens", 2000);
-            jsonBody.put("temperature", 0);
+            jsonBody.put("max_tokens", 2048);
+            // Temperature at one so that the output is a bit more random
+            jsonBody.put("temperature", 1);
         } catch(JSONException e) {
             e.printStackTrace();
         }
@@ -302,16 +315,10 @@ public class Home extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d("Home", "API request failed: " + e.getMessage());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        errorMessage("Failed to load response due to "+e.getMessage());
-                    }
-                });
-
+                errorMessage("Failed to load response due to "+e.getMessage());
             }
 
-            // Parse response from openai server and send to PostResult function
+            // Parse response from openai server and send to postResult function
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
@@ -323,26 +330,19 @@ public class Home extends AppCompatActivity {
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
                         String result = jsonArray.getJSONObject(0).getString("text");
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                PostResult(result);
-                            }
-                        });
+                        // Send result to postResult function
+                        postResult(result);
 
                     } catch (JSONException e) {
+                        Log.d("Home","Failed to load response due to "+response.code());
                         throw new RuntimeException(e);
+
                     }
                     Log.d("Home", "API request successful");
 
                 } else {
-                    Log.e("Home", "API request unsuccessful: " + response.body().toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            errorMessage("Failed to load response due to "+response.body().toString());
-                        }
-                    });
+                    Log.d("Home", "Failed to get a response from the server. Response code: " + response.code() + ", message: " + response.message());
+                    errorMessage("Failed to load response due to "+response.body().toString());
                 }
             }
         });
@@ -363,7 +363,7 @@ public class Home extends AppCompatActivity {
             calendar.set(Calendar.HOUR_OF_DAY, 8); // Set the desired time, 8 AM
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
-            //calendar.add(Calendar.SECOND, 30); // For testing purposes, set the alarm to go off 30 seconds after scheduling
+            // calendar.add(Calendar.SECOND, 15); // For testing purposes, set the alarm to go off 30 seconds after scheduling
 
             if (calendar.before(Calendar.getInstance())) {
                 calendar.add(Calendar.DATE, 1); // If it's past the desired time, schedule for the next day

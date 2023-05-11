@@ -178,6 +178,7 @@ public class Bookmarks extends AppCompatActivity {
     }
 
     @Override
+    // Unregister the network status receiver and remove the Firebase Realtime Database listener
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(networkStatusReceiver);
