@@ -49,3 +49,8 @@ When the user enters their keywords or problem description and presses the searc
     
 **Not Implemented:**  
     * Shared verses can’t be saved.  
+
+
+
+# IMPORTANT:  
+On line 309 on /frontend/Home.java replace api key with your own, or use env variables
