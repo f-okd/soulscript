@@ -1,11 +1,11 @@
 repo_name: f-okd/soulscript
-report_id: 67c4f31e328f9c2df20dbe0db7ff2202
+report_id: ee224a1946acf2d898e2d67c17d3a418
 repo_type: Public
-timestamp: '2023-11-10T11:30:12+00:00'
+timestamp: '2023-12-14T10:18:14+00:00'
 requested_by: f-okd
 provider: github
 branch: master
-detected_tools_count: 6
+detected_tools_count: 9
 tools:
 - name: Java
   description: A concurrent, class-based, object-oriented, language specifically designed
@@ -58,7 +58,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Java Build Tools
   image_url: https://img.stackshare.io/service/975/gradlephant-social-black-bg.png
-  detection_source: gradlew.bat
+  detection_source: app/build.gradle
   last_updated_by: faye
   last_updated_on: 2023-05-11 00:50:39.000000000 Z
 - name: Android OS
@@ -72,3 +72,38 @@ tools:
   detection_source: app/build.gradle
   last_updated_by: faye
   last_updated_on: 2023-05-11 00:50:39.000000000 Z
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source: app/src/main/assets/user_guide/index.html
+  last_updated_by: faye
+  last_updated_on: 2023-05-02 01:29:52.000000000 Z
+- name: com.squareup.okhttp3:okhttp
+  description: 'Null'
+  version: 4.10.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Maven Packages
+  image_url: https://img.stackshare.io/package/maven/image.png
+  detection_source_url: https://github.com/f-okd/soulscript/blob/master/app/build.gradle
+  detection_source: app/build.gradle
+  last_updated_by: faye
+  last_updated_on: 2023-05-11 00:50:39.000000000 Z
+- name: junit:junit
+  description: JUnit is a unit testing framework for Java
+  version: 4.13.2
+  license: EPL-1.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Maven Packages
+  image_url: https://img.stackshare.io/package/maven/image.png
+  detection_source_url: https://github.com/f-okd/soulscript/blob/master/app/build.gradle
+  detection_source: app/build.gradle
+  last_updated_by: faye
+  last_updated_on: 2023-04-28 18:01:09.000000000 Z
